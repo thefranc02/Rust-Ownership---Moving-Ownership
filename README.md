@@ -38,7 +38,7 @@ I started by looking at how C handles multiple pointers
 that reference the same dynamically allocated memory.
 
 #### Code Example
-
+```
 int main(void) {
   char *a = malloc(10);
   if (a == NULL){
@@ -54,6 +54,8 @@ int main(void) {
   a = b = NULL;
   return 0;
 }
+```
+
 #### What I Observed
 Attempting to free pointers like example above that point to the same memory location leads to a double-free error that causes undefined behavior.
 
@@ -67,24 +69,24 @@ I started by looking at how Rust handles pointer logic and how it specifically d
 #### Code Examples
 Function 1:
 
-'''
+```
 fn main() {
     let a = String::from("hello");
     let b = a;
 
     println!("{}", b);
 }
-'''
+```
 
 Function 2:
-'''
+```
 fn main() {
     let a = String::from("hello");
     let b = a;
 
     println!("{}", a);
 }
-'''
+```
 
 #### What I Observed
 I ran these two snippets above in the Rust Playground. From there I encountered a success for the first function. The second function I ran in the error code E0382.
