@@ -39,6 +39,9 @@ that reference the same dynamically allocated memory.
 
 #### Code Example
 ```
+#include <stdlib.h>
+#include <string.h>
+
 int main(void) {
   char *a = malloc(10);
   if (a == NULL){
@@ -138,10 +141,33 @@ The compiler pointed out that the value moved on the `let b = a;` line and that 
 This connects directly to my C example. In C, the double free happens at
 runtime because two pointers both think they own the memory. In Rust, only
 one variable owns the memory, and it is freed once when that owner goes out
-of scope. The compiler rejects Function 2 before the program can run, so
-the double-free problem cannot occur.
+of scope. In safe Rust, the compiler prevents this particular ownership mistake before the program runs. By enforcing a single owner of the String, Rust prevents the same allocation from being freed twice through this pattern.
 
 #### Questions and Follow-ups
-From here I prompted my ai of choice, ChatGPT (GPT-5.6 Luna- free user) that explained the key differences in Rust syntax/handling pointers.
 
+I used ChatGPT to clarify the differences between C pointer assignment and Rust ownership. I wanted to understand what happened internally when a value was moved and why Rust prevented the original variable from being used afterward.
 
+**Questions I explored:**
+
+1. What exactly happens internally when `let b = a;` executes?
+2. Does Rust copy the actual String data, or does it transfer ownership?
+3. Why does Rust prevent me from accessing `a` after the move?
+4. What does the `Copy` trait mean, and why doesn't `String` implement it?
+5. How does Rust determine which variable is responsible for cleaning up the allocated memory?
+
+**Follow-up exploration:**
+
+I used the Rust Playground to test the difference between using the destination variable after a move and attempting to use the original variable. I examined the E0382 compiler error to identify exactly where ownership was transferred and why the original variable was no longer valid.
+
+### 6. Discovery 3 — The `Copy` Trait vs. Moving Ownership.
+
+#### Initial Exploration
+### Code Example
+```
+fn main() {
+    let a = 5;
+    let b = a;
+
+    println!("a = {}, b = {}", a, b);
+}
+```
