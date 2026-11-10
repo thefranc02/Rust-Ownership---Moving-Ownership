@@ -29,3 +29,25 @@ I started my exploration with the following questions:
 My goal is to understand how Rust's ownership system works, particularly how moving ownership prevents multiple variables from incorrectly managing the same heap allocation.
 
 I also want to connect these concepts to my existing knowledge of C memory management so I can explain the differences with practical examples.
+
+### 4. Discovery 1 — Pointer Aliasing in C
+
+#### Initial Exploration
+
+I started by looking at how C handles multiple pointers
+that reference the same dynamically allocated memory.
+
+#### Code Example
+
+[Insert C example here]
+
+#### What I Observed
+
+[Document what happens when two pointers reference
+the same allocation and what can go wrong when memory
+is freed.]
+
+#### Questions and Follow-ups
+
+[Record questions asked during the AI exploration
+and any clarifications.]
