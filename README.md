@@ -102,7 +102,8 @@ I ran both in the Rust Playground.
 
 - Function 1 compiled and printed `hello`.
 - Function 2 failed to compile with error E0382, "borrow of moved value: `a`".
-  [ Compiling playground v0.0.1 (/playground)
+```
+Compiling playground v0.0.1 (/playground)
 error[E0382]: borrow of moved value: `a`
  --> src/main.rs:5:20
   |
@@ -131,7 +132,7 @@ For more information about this error, try `rustc --explain E0382`.
 warning: `playground` (bin "playground") generated 1 warning
 error: could not compile `playground` (bin "playground") due to 1 previous error; 1 warning emitted
 Standard Output
-]. 
+```
 The compiler pointed out that the value moved on the `let b = a;` line and that `String` does not implement the `Copy` trait.
 
 This connects directly to my C example. In C, the double free happens at
