@@ -62,6 +62,14 @@ int main(void) {
 #### What I Observed
 Attempting to free pointers like example above that point to the same memory location leads to a double-free error that causes undefined behavior.
 
+#### Additional Understanding
+
+I also considered why Rust requires `.clone()` to be called explicitly instead of automatically duplicating values during assignment.
+
+I learned that automatically cloning heap-allocated data could introduce unnecessary memory allocations and copying. In cases where a programmer only wants to transfer ownership, duplicating the data would waste memory and processing time.
+
+By making cloning explicit, Rust allows programmers to choose when duplicating data is necessary and when moving ownership is sufficient.
+
 ### 5. Discovery 2 — Initial Rust Syntax Exploration
 
 #### Initial Exploration
@@ -159,11 +167,17 @@ I used ChatGPT to clarify the differences between C pointer assignment and Rust 
 
 I used the Rust Playground to test the difference between using the destination variable after a move and attempting to use the original variable. I examined the E0382 compiler error to identify exactly where ownership was transferred and why the original variable was no longer valid.
 
-### 6. Discovery 3 — The `Copy` Trait vs. Moving Ownership.
+### 6. Discovery 3 — The Copy Trait vs. Moving Ownership
 
 #### Initial Exploration
-### Code Example
-```
+
+After testing how Rust transfers ownership of a `String`, I wanted to determine whether every variable assignment in Rust makes the original variable unusable.
+
+I tested the same assignment pattern using an integer (`i32`) instead of a `String` to see whether Rust handled different types differently.
+
+#### Code Example
+
+```rust
 fn main() {
     let a = 5;
     let b = a;
@@ -171,3 +185,48 @@ fn main() {
     println!("a = {}, b = {}", a, b);
 }
 ```
+
+#### What I Observed
+
+The program compiled successfully and printed both values:
+
+```text
+a = 5, b = 5
+```
+
+Unlike the previous `String` example, Rust allowed me to continue using `a` after assigning its value to `b`.
+
+This introduced me to the `Copy` trait. The `i32` type implements `Copy`, meaning its value is copied rather than moved. As a result, both variables remain valid after the assignment.
+
+#### Questions and Follow-ups
+
+After discovering that the integer example compiled successfully even though the original `String` example did not, I wanted to understand why Rust treated the two types differently.
+
+**Questions I explored:**
+
+1. What is `i32`, and what does the number 32 represent?
+2. What exactly is the `Copy` trait in Rust?
+3. Why does `i32` implement `Copy`, but `String` does not?
+4. Why does Rust provide different integer types?
+5. Can custom structs implement the `Copy` trait, or is it limited to built-in types?
+
+**Follow-up exploration:**
+
+I learned that `i32` is a signed 32-bit integer type and that it implements the `Copy` trait. This means assigning an `i32` to another variable copies its value, allowing the original variable to remain usable.
+
+I then explored why `String` behaves differently. Unlike an integer, a `String` owns a dynamically allocated heap buffer. Automatically copying its ownership could result in multiple variables attempting to manage and free the same allocation.
+
+I also investigated whether custom structs and vectors could implement `Copy`. I learned that custom structs can implement `Copy` if all their fields implement `Copy` and the struct does not implement `Drop`. Vectors do not implement `Copy` because they own dynamically allocated memory and require cleanup.
+
+### AI Conversation Permalink
+1. https://chatgpt.com/share/6af62a4b-e144-83e9-8fda-46b7778f5382
+2. https://chatgpt.com/share/6af62a44-99dc-83e9-a9e1-d3b2a39277a2
+3. https://chatgpt.com/share/6af62a3e-c278-83e9-9178-ff73a77af6d1
+
+### Earlier AI Exploration — Claude
+
+I initially began exploring Rust ownership in a separate Claude session. That session ended before I could develop the topic extensively, so I transferred the relevant discussion and progress into ChatGPT to continue the exploration.
+
+The material from the earlier session is incorporated into this README.
+
+**Original Claude conversation:** https://claude.ai/share/201ba1d8-649e-4d8f-a782-cb5c6228e87b
