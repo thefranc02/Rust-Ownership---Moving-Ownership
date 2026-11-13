@@ -151,6 +151,22 @@ runtime because two pointers both think they own the memory. In Rust, only
 one variable owns the memory, and it is freed once when that owner goes out
 of scope. In safe Rust, the compiler prevents this particular ownership mistake before the program runs. By enforcing a single owner of the String, Rust prevents the same allocation from being freed twice through this pattern.
 
+#### Clarification - Variables, Ownership, and References
+During my exploration, I clarified the distinction between a variable binding and a reference in Rust. 
+
+A variable binding associates a name with a value. Assigning a non-copy value to another binding transfers ownership: 
+```
+let a = String::("hello");
+let b = a;
+```
+A reference, on the other hand, is created using the `&` operator:
+```
+let a = String::from("hello");
+let b = &a;
+```
+Here, a retains ownership while b borrows a reference to its value.
+This distinction helped me understand that Rust does not prohibit multiple references to the same data. Instead, its borrowing rules regular how references can access data to maintain memory safety.
+
 #### Questions and Follow-ups
 
 I used ChatGPT to clarify the differences between C pointer assignment and Rust ownership. I wanted to understand what happened internally when a value was moved and why Rust prevented the original variable from being used afterward.
